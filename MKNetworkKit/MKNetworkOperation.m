@@ -570,7 +570,7 @@ typedef enum {
 {
     __block NSMutableString *displayString = [NSMutableString stringWithFormat:@"curl -X %@", self.request.HTTPMethod];
     
-    if([self.filesToBePosted count] == 0 && [self.dataToBePosted count] == 0) {
+    if([self.filesToBePosted count] == 0) {
         [[self.request allHTTPHeaderFields] enumerateKeysAndObjectsUsingBlock:^(id key, id val, BOOL *stop)
          {
              [displayString appendFormat:@" -H \"%@: %@\"", key, val];
