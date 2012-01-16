@@ -36,7 +36,7 @@
                                           cancelButtonTitle:NSLocalizedString(@"Dismiss", @"")
                                           otherButtonTitles:nil];
     [alert show];
-    return alert;
+    return [alert autorelease];
 }
 @end
 #endif

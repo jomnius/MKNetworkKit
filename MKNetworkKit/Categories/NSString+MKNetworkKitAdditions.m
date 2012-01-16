@@ -47,7 +47,7 @@
 	CFUUIDRef	uuidObj = CFUUIDCreate(nil);
 	NSString	*uuidString = (__bridge_transfer NSString*)CFUUIDCreateString(nil, uuidObj);
 	CFRelease(uuidObj);
-	return uuidString;
+	return [uuidString autorelease];
 }
 
 - (NSString*) urlEncodedString {
@@ -58,7 +58,8 @@
                                                                         CFSTR("?!@#$^&%*+,:;='\"`<>()[]{}/\\|~ "), 
                                                                         kCFStringEncodingUTF8);
     
-    NSString *encodedString = [[NSString alloc] initWithString:(__bridge_transfer NSString*) encodedCFString];    
+    NSString *encodedString = [[[NSString alloc] initWithString:(__bridge_transfer NSString*) encodedCFString] autorelease];
+    CFRelease(encodedCFString);
 
     if(!encodedString)
         encodedString = @"";    
@@ -74,7 +75,8 @@
                                                                                           kCFStringEncodingUTF8);
     
     // We need to replace "+" with " " because the CF method above doesn't do it
-    NSString *decodedString = [[NSString alloc] initWithString:(__bridge_transfer NSString*) decodedCFString];    
+    NSString *decodedString = [[[NSString alloc] initWithString:(__bridge_transfer NSString*) decodedCFString] autorelease];
+    CFRelease(decodedCFString);
     return (!decodedString) ? @"" : [decodedString stringByReplacingOccurrencesOfString:@"+" withString:@" "];
 }
 

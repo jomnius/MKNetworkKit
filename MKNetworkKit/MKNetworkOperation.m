@@ -166,17 +166,17 @@
 
 -(NSURLRequest*) readonlyRequest {
     
-    return [self.request copy];
+    return [[self.request copy] autorelease];
 }
 
 -(NSHTTPURLResponse*) readonlyResponse {
     
-    return [self.response copy];
+    return [[self.response copy] autorelease];
 }
 
 - (NSDictionary *) readonlyPostDictionary {
     
-    return [self.fieldsToBePosted copy];
+    return [[self.fieldsToBePosted copy] autorelease];
 }
 
 -(NSString*) HTTPMethod {
@@ -347,26 +347,26 @@
     MKNetworkOperation *theCopy = [[[self class] allocWithZone:zone] init];  // use designated initializer
     
     [theCopy setStringEncoding:self.stringEncoding];
-    [theCopy setUniqueId:[self.uniqueId copy]];
+    [theCopy setUniqueId:[[self.uniqueId copy] autorelease]];
     
-    [theCopy setConnection:[self.connection copy]];
-    [theCopy setRequest:[self.request copy]];
-    [theCopy setResponse:[self.response copy]];
-    [theCopy setFieldsToBePosted:[self.fieldsToBePosted copy]];
-    [theCopy setFilesToBePosted:[self.filesToBePosted copy]];
-    [theCopy setDataToBePosted:[self.dataToBePosted copy]];
-    [theCopy setUsername:[self.username copy]];
-    [theCopy setPassword:[self.password copy]];
-    [theCopy setClientCertificate:[self.clientCertificate copy]];
-    [theCopy setResponseBlocks:[self.responseBlocks copy]];
-    [theCopy setErrorBlocks:[self.errorBlocks copy]];
+    [theCopy setConnection:[[self.connection copy] autorelease]];
+    [theCopy setRequest:[[self.request copy] autorelease]];
+    [theCopy setResponse:[[self.response copy] autorelease]];
+    [theCopy setFieldsToBePosted:[[self.fieldsToBePosted copy] autorelease]];
+    [theCopy setFilesToBePosted:[[self.filesToBePosted copy] autorelease]];
+    [theCopy setDataToBePosted:[[self.dataToBePosted copy] autorelease]];
+    [theCopy setUsername:[[self.username copy] autorelease]];
+    [theCopy setPassword:[[self.password copy] autorelease]];
+    [theCopy setClientCertificate:[[self.clientCertificate copy] autorelease]];
+    [theCopy setResponseBlocks:[[self.responseBlocks copy] autorelease]];
+    [theCopy setErrorBlocks:[[self.errorBlocks copy] autorelease]];
     [theCopy setState:self.state];
     [theCopy setIsCancelled:self.isCancelled];
-    [theCopy setMutableData:[self.mutableData copy]];
-    [theCopy setUploadProgressChangedHandlers:[self.uploadProgressChangedHandlers copy]];
-    [theCopy setDownloadProgressChangedHandlers:[self.downloadProgressChangedHandlers copy]];
-    [theCopy setDownloadStreams:[self.downloadStreams copy]];
-    [theCopy setCachedResponse:[self.cachedResponse copy]];
+    [theCopy setMutableData:[[self.mutableData copy] autorelease]];
+    [theCopy setUploadProgressChangedHandlers:[[self.uploadProgressChangedHandlers copy] autorelease]];
+    [theCopy setDownloadProgressChangedHandlers:[[self.downloadProgressChangedHandlers copy] autorelease]];
+    [theCopy setDownloadStreams:[[self.downloadStreams copy] autorelease]];
+    [theCopy setCachedResponse:[[self.cachedResponse copy] autorelease]];
     [theCopy setCacheHandlingBlock:self.cacheHandlingBlock];
     
     return theCopy;
@@ -425,23 +425,23 @@
 
 -(void) onCompletion:(MKNKResponseBlock) response onError:(MKNKErrorBlock) error {
     
-    [self.responseBlocks addObject:[response copy]];
-    [self.errorBlocks addObject:[error copy]];
+    [self.responseBlocks addObject:[[response copy] autorelease]];
+    [self.errorBlocks addObject:[[error copy] autorelease]];
 }
 
 -(void) onUploadProgressChanged:(MKNKProgressBlock) uploadProgressBlock {
     
-    [self.uploadProgressChangedHandlers addObject:[uploadProgressBlock copy]];
+    [self.uploadProgressChangedHandlers addObject:[[uploadProgressBlock copy] autorelease]];
 }
 
 -(void) onDownloadProgressChanged:(MKNKProgressBlock) downloadProgressBlock {
     
-    [self.downloadProgressChangedHandlers addObject:[downloadProgressBlock copy]];
+    [self.downloadProgressChangedHandlers addObject:[[downloadProgressBlock copy] autorelease]];
 }
 
 -(void) setUploadStream:(NSInputStream*) inputStream {
 
-#warning Method not tested yet.
+    // TODO #warning Method not tested yet.
     self.request.HTTPBodyStream = inputStream;
 }
 
@@ -556,7 +556,7 @@
                                       [[NSDate date] descriptionWithLocale:[NSLocale currentLocale]],
                                       [self curlCommandLineString]];
     
-    NSString *responseString = [self responseString];    
+    NSString *responseString = [self responseString];
     if([responseString length] > 0) {
         [displayString appendFormat:@"\n--------\nResponse\n--------\n%@\n", responseString];
     }
@@ -568,7 +568,7 @@
 {
     __block NSMutableString *displayString = [NSMutableString stringWithFormat:@"curl -X %@", self.request.HTTPMethod];
     
-    if([self.filesToBePosted count] == 0) {
+    if([self.filesToBePosted count] == 0){
         [[self.request allHTTPHeaderFields] enumerateKeysAndObjectsUsingBlock:^(id key, id val, BOOL *stop)
          {
              [displayString appendFormat:@" -H \"%@: %@\"", key, val];
@@ -671,7 +671,7 @@
                                      [[thisFile objectForKey:@"filepath"] lastPathComponent], 
                                      [thisFile objectForKey:@"mimetype"]];
         
-        [body appendData:[thisFieldString dataUsingEncoding:[self stringEncoding]]];         
+        [body appendData:[thisFieldString dataUsingEncoding:[self stringEncoding]]];
         [body appendData: [NSData dataWithContentsOfFile:[thisFile objectForKey:@"filepath"]]];
     }];
     
@@ -750,9 +750,9 @@
         }
         
         DLog(@"%@", self);
-        self.connection = [[NSURLConnection alloc] initWithRequest:self.request 
+        self.connection = [[[NSURLConnection alloc] initWithRequest:self.request 
                                                           delegate:self 
-                                                  startImmediately:YES]; 
+                                                  startImmediately:YES] autorelease];
         self.state = MKNetworkOperationStateExecuting;
     }
     else {
@@ -843,10 +843,10 @@
     }
     else if ((challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate) && self.clientCertificate) {
         
-        NSData *certData = [[NSData alloc] initWithContentsOfFile:self.clientCertificate];
+        NSData *certData = [[[NSData alloc] initWithContentsOfFile:self.clientCertificate] autorelease];
         
-#warning method not implemented. Don't use client certicate authentication for now.
-        SecIdentityRef myIdentity;  // ???
+        // TODO #warning method not implemented. Don't use client certicate authentication for now.
+        SecIdentityRef myIdentity = nil;  // ???
         
         SecCertificateRef myCert = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)certData);
         SecCertificateRef certArray[1] = { myCert };
@@ -859,7 +859,7 @@
         [challenge.sender useCredential:credential forAuthenticationChallenge:challenge];
     }
     else if (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust) {
-#warning method not tested. proceed at your own risk
+        // TODO #warning method not tested. proceed at your own risk
         SecTrustRef serverTrust = [[challenge protectionSpace] serverTrust];
         SecTrustResultType result;
         SecTrustEvaluate(serverTrust, &result);
@@ -919,7 +919,8 @@
         // do cache processing only if the request is a "GET" method
         NSString *lastModified = [httpHeaders objectForKey:@"Last-Modified"];
         NSString *eTag = [httpHeaders objectForKey:@"ETag"];
-        NSString *expiresOn = [httpHeaders objectForKey:@"Expires"];
+        // TODO: expiresOn value never used --> BUG?
+        NSString *expiresOn = nil;//[httpHeaders objectForKey:@"Expires"];
         
         NSString *contentType = [httpHeaders objectForKey:@"Content-Type"];
         // if contentType is image, 
@@ -1012,7 +1013,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
             redirectResponse: (NSURLResponse *)inRedirectResponse;
 {
     if (inRedirectResponse) {
-        NSMutableURLRequest *r = [self.request mutableCopy];
+        NSMutableURLRequest *r = [[self.request mutableCopy] autorelease];
         [r setURL: [inRequest URL]];
         DLog(@"Redirected to %@", [[inRequest URL] absoluteString]);
 
@@ -1022,7 +1023,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
     }
 }
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-    
+
     self.state = MKNetworkOperationStateFinished;
     
     for(NSOutputStream *stream in self.downloadStreams)
@@ -1031,7 +1032,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
     if (self.response.statusCode >= 200 && self.response.statusCode < 300) {
         
         self.cachedResponse = nil; // remove cached data
-        [self notifyCache];        
+        [self notifyCache];
         [self operationSucceeded];
         
     } 
@@ -1080,7 +1081,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
 
 -(NSString*) responseStringWithEncoding:(NSStringEncoding) encoding {
     
-    return [[NSString alloc] initWithData:[self responseData] encoding:encoding];
+    return [[[NSString alloc] initWithData:[self responseData] encoding:encoding] autorelease];
 }
 
 #if TARGET_OS_IPHONE
@@ -1105,7 +1106,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
     if([NSJSONSerialization class]) {
         if([self responseData] == nil) return nil;
         NSError *error = nil;
-        id returnValue = [NSJSONSerialization JSONObjectWithData:[self responseData] options:0 error:&error];    
+        id returnValue = [NSJSONSerialization JSONObjectWithData:[self responseData] options:0 error:&error];
         DLog(@"JSON Parsing Error: %@", error);
         return returnValue;
     } else {

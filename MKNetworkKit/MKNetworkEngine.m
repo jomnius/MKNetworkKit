@@ -102,7 +102,7 @@ static NSOperationQueue *_sharedNetworkQueue;
              [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleNameKey], 
              [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey]];
             [newHeadersDict setObject:userAgentString forKey:@"User-Agent"];
-            self.customHeaders = newHeadersDict;
+            self.customHeaders = [newHeadersDict autorelease];
         } else {
             self.customHeaders = headers;
         }            
@@ -227,7 +227,7 @@ static NSOperationQueue *_sharedNetworkQueue;
 
 -(NSString*) readonlyHostName {
     
-    return [_hostName copy];
+    return [[_hostName copy] autorelease];
 }
 
 -(BOOL) isReachable {
@@ -287,7 +287,7 @@ static NSOperationQueue *_sharedNetworkQueue;
     MKNetworkOperation *operation = [[MKNetworkOperation alloc] initWithURLString:urlString params:body httpMethod:method];
         
     [self prepareHeaders:operation];
-    return operation;
+    return [operation autorelease];
 }
 
 -(void) prepareHeaders:(MKNetworkOperation*) operation {

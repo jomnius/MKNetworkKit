@@ -57,7 +57,7 @@
         if(error)
             DLog(@"JSON Parsing Error: %@", error);
         
-        return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        return [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
     } else {
         
         DLog(@"JSON encoder missing, falling back to URL encoding");
@@ -74,7 +74,7 @@
     if(error)
         DLog(@"JSON Parsing Error: %@", error);
     
-    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];    
+    return [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
 }
 
 @end

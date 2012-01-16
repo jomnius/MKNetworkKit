@@ -306,7 +306,7 @@ char *NewBase64Encode(
 			length:outputLength
 			encoding:NSASCIIStringEncoding];
 	free(outputBuffer);
-	return result;
+	return [result autorelease];
 }
 
 @end
