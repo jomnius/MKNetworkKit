@@ -881,10 +881,12 @@
                 // Cert not trusted, and user is not OK with that. Don't proceed
                 [challenge.sender continueWithoutCredentialForAuthenticationChallenge:challenge];
             }
-        } else {
+        } 
+        else {
             
             // invalid or revoked certificate
-            [challenge.sender continueWithoutCredentialForAuthenticationChallenge:challenge];
+            [challenge.sender useCredential:[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];
+            //[challenge.sender continueWithoutCredentialForAuthenticationChallenge:challenge];
         }
     }        
     else if (self.authHandler) {
